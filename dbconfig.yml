@@ -1,0 +1,9 @@
+development:
+  dialect: mysql
+  dir: db/migrations
+  datasource: ${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:3306)/${DB_NAME}-dev?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
+
+test:
+  dialect: mysql
+  dir: db/migrations
+  datasource: ${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:3306)/${DB_NAME}-test?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
