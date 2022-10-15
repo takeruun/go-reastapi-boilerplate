@@ -6,8 +6,8 @@ import (
 )
 
 type AuthRouter interface {
-	SignInRoute(w http.ResponseWriter, r *http.Request)
-	SignUpRoute(w http.ResponseWriter, r *http.Request)
+	SignInRequest(w http.ResponseWriter, r *http.Request)
+	SignUpRequest(w http.ResponseWriter, r *http.Request)
 }
 
 type authRouter struct {
@@ -20,10 +20,10 @@ func NewAuthRouter(authC controller.AuthController) AuthRouter {
 	}
 }
 
-func (ar *authRouter) SignInRoute(w http.ResponseWriter, r *http.Request) {
+func (ar *authRouter) SignInRequest(w http.ResponseWriter, r *http.Request) {
 	ar.authC.SignIn(w, r)
 }
 
-func (ar *authRouter) SignUpRoute(w http.ResponseWriter, r *http.Request) {
+func (ar *authRouter) SignUpRequest(w http.ResponseWriter, r *http.Request) {
 	ar.authC.SignUp(w, r)
 }
