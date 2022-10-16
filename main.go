@@ -24,7 +24,7 @@ func main() {
 	todoRepository := database.NewTodoRepository(db)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
-	todoUsecase := usecase.NewTodoUsecase(todoRepository)
+	todoUsecase := usecase.NewTodoUsecase(todoRepository, sessionService)
 	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService, cyptoService)
 
 	appController := controller.NewAppController()

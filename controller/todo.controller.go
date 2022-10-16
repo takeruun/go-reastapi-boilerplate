@@ -2,6 +2,7 @@ package controller
 
 import (
 	"app/usecase"
+	"encoding/json"
 	"net/http"
 )
 
@@ -25,6 +26,18 @@ func NewTodoController(todoU usecase.TodoUsecase) TodoController {
 
 func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	todos, err := todoCon.todoU.FindAll(r.Context())
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	var data []byte
+	data, err = json.MarshalIndent(&todos, "", "\t\t")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.Write(data)
 }
 
 func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request) {

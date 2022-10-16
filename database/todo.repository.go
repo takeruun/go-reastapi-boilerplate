@@ -6,7 +6,7 @@ import (
 )
 
 type TodoRepository interface {
-	FindAll() (todos *[]entity.Todo, err error)
+	FindAll(userId uint64) (todos []*entity.Todo, err error)
 }
 
 type todoRepository struct {
@@ -17,8 +17,9 @@ func NewTodoRepository(DB *config.DB) TodoRepository {
 	return &todoRepository{DB: DB}
 }
 
-func (todoRep *todoRepository) FindAll() (todos *[]entity.Todo, err error) {
+func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err error) {
 	err = todoRep.DB.Model(&entity.Todo{}).
+		Where("user_id = ?", userId).
 		Find(&todos).
 		Error
 
