@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -37,8 +36,6 @@ type HTTP struct {
 // GetSession returns a cached session of the given name
 func (service *sessionService) GetSession(ctx context.Context, name string) (*sessions.Session, error) {
 	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
-
-	fmt.Println(httpContext)
 
 	// Ignore err because a session is always returned even if one doesn't exist
 	session, err := service.store.Get(httpContext.R, name)
