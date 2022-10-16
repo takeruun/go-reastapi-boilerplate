@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/usecase"
 	"net/http"
 )
 
@@ -12,10 +13,14 @@ type TodoController interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-type todoController struct{}
+type todoController struct {
+	todoU usecase.TodoUsecase
+}
 
-func NewTodoController() TodoController {
-	return &todoController{}
+func NewTodoController(todoU usecase.TodoUsecase) TodoController {
+	return &todoController{
+		todoU: todoU,
+	}
 }
 
 func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {

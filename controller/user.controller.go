@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/usecase"
 	"net/http"
 )
 
@@ -12,10 +13,14 @@ type UserController interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-type userController struct{}
+type userController struct {
+	userU usecase.UserUsecase
+}
 
-func NewUserController() UserController {
-	return &userController{}
+func NewUserController(userU usecase.UserUsecase) UserController {
+	return &userController{
+		userU: userU,
+	}
 }
 
 func (userCon *userController) Index(w http.ResponseWriter, r *http.Request) {
