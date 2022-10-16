@@ -25,7 +25,7 @@ func newSessionStore(db *gorm.DB, ss *SESSION_STORE) *gormstore.Store {
 		[]byte(ss.SECRET_HASH_KEY),
 	)
 
-	store.SessionOpts.Secure = true
+	store.SessionOpts.Secure = false // postman での使用は false に
 	store.SessionOpts.HttpOnly = true
 	store.SessionOpts.MaxAge = 60 * 60 * 24
 	store.SessionOpts.SameSite = http.SameSiteNoneMode
