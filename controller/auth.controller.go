@@ -36,4 +36,12 @@ func (authCon *authController) SignIn(w http.ResponseWriter, r *http.Request) {
 
 func (authCon *authController) SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+
+	var signUpParams dto.AuthSignUpRequestDto
+	json.Unmarshal(body, &signUpParams)
+
+	authCon.authU.SignUp(r.Context(), &signUpParams)
 }

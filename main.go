@@ -18,13 +18,14 @@ func main() {
 	sessionStore := config.NewSessionStore(db)
 
 	sessionService := service.NewSessionService(sessionStore)
+	cyptoService := service.NewCyptoService()
 
 	userRepository := database.NewUserRepository(db)
 	todoRepository := database.NewTodoRepository(db)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	todoUsecase := usecase.NewTodoUsecase(todoRepository)
-	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService)
+	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService, cyptoService)
 
 	appController := controller.NewAppController()
 	userController := controller.NewUserController(userUsecase)
