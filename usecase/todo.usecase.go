@@ -13,6 +13,7 @@ type TodoUsecase interface {
 	FindAll(ctx context.Context) (todos []*entity.Todo, err error)
 	Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todos *entity.Todo, err error)
 	Show(ctx context.Context, todoId int) (todo *entity.Todo, err error)
+	Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error)
 }
 
 type todoUsecase struct {
@@ -60,6 +61,16 @@ func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo,
 
 	if userId != todo.UserId {
 		return nil, errors.New("no your todo")
+	}
+
+	return
+}
+
+func (tu *todoUsecase) Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error) {
+	entity := entity.Todo{ID: uint64(todoId), Title: updateParams.Title, Description: updateParams.Description}
+	todo, err = tu.todoRepo.Update(todoId, &entity)
+	if err != nil {
+		return nil, err
 	}
 
 	return

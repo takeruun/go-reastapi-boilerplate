@@ -34,7 +34,9 @@ func (ur *todoRouter) HandleTodoRequest(w http.ResponseWriter, r *http.Request) 
 	case "POST":
 		ur.todoC.Create(w, r)
 	case "PUT":
-		ur.todoC.Edit(w, r)
+		id := strings.TrimPrefix(r.URL.Path, "/todos/") // URLを切り取る
+		todoId, _ := strconv.Atoi(id)
+		ur.todoC.Edit(w, r, todoId)
 	case "DELETE":
 		ur.todoC.Delete(w, r)
 	default:
