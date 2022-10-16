@@ -10,6 +10,7 @@ type TodoRepository interface {
 	Create(entity *entity.Todo) (todo *entity.Todo, err error)
 	Get(todoId int) (todo *entity.Todo, err error)
 	Update(todoId int, entity *entity.Todo) (todo *entity.Todo, err error)
+	Delete(entity *entity.Todo) error
 }
 
 type todoRepository struct {
@@ -68,4 +69,14 @@ func (todoRep *todoRepository) Update(todoId int, entity *entity.Todo) (todo *en
 	}
 
 	return
+}
+
+func (todoRep *todoRepository) Delete(entity *entity.Todo) error {
+	if err := todoRep.DB.
+		Delete(&entity).
+		Error; err != nil {
+		return err
+	}
+
+	return nil
 }

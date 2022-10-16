@@ -14,6 +14,7 @@ type TodoUsecase interface {
 	Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todos *entity.Todo, err error)
 	Show(ctx context.Context, todoId int) (todo *entity.Todo, err error)
 	Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error)
+	Delete(ctx context.Context, todoId int) error
 }
 
 type todoUsecase struct {
@@ -74,4 +75,12 @@ func (tu *todoUsecase) Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) 
 	}
 
 	return
+}
+
+func (tu *todoUsecase) Delete(ctx context.Context, todoId int) error {
+	if err := tu.todoRepo.Delete(&entity.Todo{ID: uint64(todoId)}); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -38,7 +38,9 @@ func (ur *todoRouter) HandleTodoRequest(w http.ResponseWriter, r *http.Request) 
 		todoId, _ := strconv.Atoi(id)
 		ur.todoC.Edit(w, r, todoId)
 	case "DELETE":
-		ur.todoC.Delete(w, r)
+		id := strings.TrimPrefix(r.URL.Path, "/todos/") // URLを切り取る
+		todoId, _ := strconv.Atoi(id)
+		ur.todoC.Delete(w, r, todoId)
 	default:
 		w.WriteHeader(405)
 	}
