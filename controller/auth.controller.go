@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"app/controller/dto"
 	"app/usecase"
+	"encoding/json"
 	"net/http"
 )
 
@@ -23,7 +25,13 @@ func NewAuthController(authU usecase.AuthUsecase) AuthController {
 func (authCon *authController) SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	authCon.authU.SignIn(r.Context())
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+
+	var signInParams dto.AuthSignInRequestDto
+	json.Unmarshal(body, &signInParams)
+
+	authCon.authU.SignIn(r.Context(), &signInParams)
 }
 
 func (authCon *authController) SignUp(w http.ResponseWriter, r *http.Request) {

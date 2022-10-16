@@ -1,13 +1,16 @@
 package usecase
 
 import (
+	"app/controller/dto"
 	"app/database"
 	"app/service"
 	"context"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthUsecase interface {
-	SignIn(context.Context) error
+	SignIn(ctx context.Context, signInParams *dto.AuthSignInRequestDto) error
 	SignUp() error
 }
 
@@ -23,7 +26,22 @@ func NewAuthUsecase(userRepo database.UserRepository, sessionS service.SessionSe
 	}
 }
 
-func (uu *authUsecase) SignIn(ctx context.Context) error {
+func (uu *authUsecase) SignIn(ctx context.Context, signInParams *dto.AuthSignInRequestDto) error {
+	loginUser, err := uu.userRepo.FindByEmail(signInParams.Email)
+	if err != nil {
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(loginUser.HashPassword), []byte(signInParams.Password))
+	if err != nil {
+		return err
+	}
+
+	err = uu.sessionS.SaveSession(ctx, "userId", loginUser.ID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
