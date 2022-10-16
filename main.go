@@ -5,6 +5,7 @@ import (
 	"app/controller"
 	"app/database"
 	"app/router"
+	"app/service"
 	"app/usecase"
 	"net/http"
 	"time"
@@ -14,13 +15,16 @@ func main() {
 	time.Local = time.FixedZone("JST", 9*60*60)
 
 	db := config.NewDB()
+	sessionStore := config.NewSessionStore(db)
+
+	sessionService := service.NewSessionService(sessionStore)
 
 	userRepository := database.NewUserRepository(db)
 	todoRepository := database.NewTodoRepository(db)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	todoUsecase := usecase.NewTodoUsecase(todoRepository)
-	authUsecase := usecase.NewAuthUsecase(userRepository)
+	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService)
 
 	appController := controller.NewAppController()
 	userController := controller.NewUserController(userUsecase)
