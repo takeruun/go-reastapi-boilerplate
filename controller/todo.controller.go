@@ -9,7 +9,7 @@ import (
 
 type TodoController interface {
 	Index(w http.ResponseWriter, r *http.Request)
-	Show(w http.ResponseWriter, r *http.Request)
+	Show(w http.ResponseWriter, r *http.Request, todoId int)
 	Edit(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
@@ -41,8 +41,21 @@ func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request) {
+func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request, todoId int) {
 	w.Header().Set("Content-Type", "application/json")
+
+	todo, err := todoCon.todoU.Show(r.Context(), todoId)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	var data []byte
+	data, err = json.MarshalIndent(&todo, "", "\t\t")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.Write(data)
 }
 func (todoCon *todoController) Edit(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -68,8 +81,8 @@ func (todoCon *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(data)
-
 }
+
 func (todoCon *todoController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 }

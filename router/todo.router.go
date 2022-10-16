@@ -3,6 +3,8 @@ package router
 import (
 	"app/controller"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 type TodoRouter interface {
@@ -22,7 +24,13 @@ func NewTodoRouter(todoC controller.TodoController) TodoRouter {
 func (ur *todoRouter) HandleTodoRequest(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		ur.todoC.Index(w, r)
+		id := strings.TrimPrefix(r.URL.Path, "/todos/") // URLを切り取る
+		if id != "" {
+			todoId, _ := strconv.Atoi(id)
+			ur.todoC.Show(w, r, todoId)
+		} else {
+			ur.todoC.Index(w, r)
+		}
 	case "POST":
 		ur.todoC.Create(w, r)
 	case "PUT":

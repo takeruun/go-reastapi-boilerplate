@@ -6,11 +6,13 @@ import (
 	"app/entity"
 	"app/service"
 	"context"
+	"errors"
 )
 
 type TodoUsecase interface {
 	FindAll(ctx context.Context) (todos []*entity.Todo, err error)
 	Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todos *entity.Todo, err error)
+	Show(ctx context.Context, todoId int) (todo *entity.Todo, err error)
 }
 
 type todoUsecase struct {
@@ -42,6 +44,22 @@ func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateR
 	todo, err = tu.todoRepo.Create(&entity)
 	if err != nil {
 		return nil, err
+	}
+
+	return
+}
+
+func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo, err error) {
+	session, _ := tu.sessionS.GetSession(ctx, "session")
+	userId := session.Values["userId"].(uint64)
+
+	todo, err = tu.todoRepo.Get(todoId)
+	if err != nil {
+		return nil, err
+	}
+
+	if userId != todo.UserId {
+		return nil, errors.New("no your todo")
 	}
 
 	return
