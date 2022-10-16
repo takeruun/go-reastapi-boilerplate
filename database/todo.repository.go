@@ -7,6 +7,7 @@ import (
 
 type TodoRepository interface {
 	FindAll(userId uint64) (todos []*entity.Todo, err error)
+	Create(entity *entity.Todo) (todo *entity.Todo, err error)
 }
 
 type todoRepository struct {
@@ -23,6 +24,20 @@ func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err
 		Find(&todos).
 		Error
 
+	if err != nil {
+		return nil, err
+	}
+
+	return
+}
+
+func (todoRep *todoRepository) Create(entity *entity.Todo) (todo *entity.Todo, err error) {
+	err = todoRep.DB.Create(&entity).Error
+	if err != nil {
+		return nil, err
+	}
+
+	err = todoRep.DB.Find(&todo, &entity.ID).Error
 	if err != nil {
 		return nil, err
 	}

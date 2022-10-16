@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"app/controller/dto"
 	"app/usecase"
 	"encoding/json"
 	"net/http"
@@ -48,6 +49,26 @@ func (todoCon *todoController) Edit(w http.ResponseWriter, r *http.Request) {
 }
 func (todoCon *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+
+	var createParams dto.TodoCreateRequestDto
+	json.Unmarshal(body, &createParams)
+
+	todo, err := todoCon.todoU.Create(r.Context(), &createParams)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	var data []byte
+	data, err = json.MarshalIndent(&todo, "", "\t\t")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.Write(data)
+
 }
 func (todoCon *todoController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
