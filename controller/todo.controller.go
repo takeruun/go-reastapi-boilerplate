@@ -27,7 +27,6 @@ func NewTodoController(todoU usecase.TodoUsecase) TodoController {
 }
 
 func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	todos, err := todoCon.todoU.FindAll(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -47,8 +46,6 @@ func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request, todoId int) {
-	w.Header().Set("Content-Type", "application/json")
-
 	todo, err := todoCon.todoU.Show(r.Context(), todoId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -68,8 +65,6 @@ func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request, todo
 }
 
 func (todoCon *todoController) Edit(w http.ResponseWriter, r *http.Request, todoId int) {
-	w.Header().Set("Content-Type", "application/json")
-
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
@@ -90,8 +85,6 @@ func (todoCon *todoController) Edit(w http.ResponseWriter, r *http.Request, todo
 }
 
 func (todoCon *todoController) Create(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
@@ -117,8 +110,6 @@ func (todoCon *todoController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (todoCon *todoController) Delete(w http.ResponseWriter, r *http.Request, todoId int) {
-	w.Header().Set("Content-Type", "application/json")
-
 	if err := todoCon.todoU.Delete(r.Context(), todoId); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))

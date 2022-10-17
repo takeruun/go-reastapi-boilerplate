@@ -24,18 +24,16 @@ func NewUserController(userU usecase.UserUsecase) UserController {
 }
 
 func (userCon *userController) Index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 }
 
 func (userCon *userController) Show(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 }
+
 func (userCon *userController) Edit(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 }
+
 func (userCon *userController) Create(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 }
+
 func (userCon *userController) Delete(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 }
