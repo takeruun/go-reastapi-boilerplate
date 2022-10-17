@@ -6,8 +6,7 @@ import (
 	"app/entity"
 	"app/service"
 	"context"
-
-	"golang.org/x/crypto/bcrypt"
+	"errors"
 )
 
 type AuthUsecase interface {
@@ -35,9 +34,8 @@ func (uu *authUsecase) SignIn(ctx context.Context, signInParams *dto.AuthSignInR
 		return err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(loginUser.HashPassword), []byte(signInParams.Password))
-	if err != nil {
-		return err
+	if !uu.cyptoS.ComparePasswords(loginUser.HashPassword, []byte(signInParams.Password)) {
+		return errors.New("Authentication Failure")
 	}
 
 	err = uu.sessionS.SaveSession(ctx, "userId", loginUser.ID)
