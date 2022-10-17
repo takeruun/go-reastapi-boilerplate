@@ -54,8 +54,8 @@ func (uu *authUsecase) SignUp(ctx context.Context, signInParams *dto.AuthSignUpR
 		return err
 	}
 
-	entity := entity.User{Name: signInParams.Name, Email: signInParams.Email, HashPassword: hashPwd}
-	loginUser, err := uu.userRepo.Create(&entity)
+	u := entity.User{Name: signInParams.Name, Email: signInParams.Email, HashPassword: hashPwd}
+	loginUser, err := uu.userRepo.Create(&u)
 	if err != nil {
 		return err
 	}

@@ -42,8 +42,8 @@ func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateR
 	session, _ := tu.sessionS.GetSession(ctx, "_goreset_session")
 	userId := session.Values["userId"].(uint64)
 
-	entity := entity.Todo{Title: createParams.Title, Description: createParams.Description, UserId: userId}
-	todo, err = tu.todoRepo.Create(&entity)
+	t := entity.Todo{Title: createParams.Title, Description: createParams.Description, UserId: userId}
+	todo, err = tu.todoRepo.Create(&t)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,8 @@ func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo,
 }
 
 func (tu *todoUsecase) Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error) {
-	entity := entity.Todo{ID: uint64(todoId), Title: updateParams.Title, Description: updateParams.Description}
-	todo, err = tu.todoRepo.Update(todoId, &entity)
+	t := entity.Todo{ID: uint64(todoId), Title: updateParams.Title, Description: updateParams.Description}
+	todo, err = tu.todoRepo.Update(todoId, &t)
 	if err != nil {
 		return nil, err
 	}

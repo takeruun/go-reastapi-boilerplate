@@ -7,10 +7,10 @@ import (
 
 type TodoRepository interface {
 	FindAll(userId uint64) (todos []*entity.Todo, err error)
-	Create(entity *entity.Todo) (todo *entity.Todo, err error)
+	Create(t *entity.Todo) (todo *entity.Todo, err error)
 	Get(todoId int) (todo *entity.Todo, err error)
-	Update(todoId int, entity *entity.Todo) (todo *entity.Todo, err error)
-	Delete(entity *entity.Todo) error
+	Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error)
+	Delete(t *entity.Todo) error
 }
 
 type todoRepository struct {
@@ -34,13 +34,13 @@ func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err
 	return
 }
 
-func (todoRep *todoRepository) Create(entity *entity.Todo) (todo *entity.Todo, err error) {
-	err = todoRep.DB.Create(&entity).Error
+func (todoRep *todoRepository) Create(t *entity.Todo) (todo *entity.Todo, err error) {
+	err = todoRep.DB.Create(&t).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = todoRep.DB.Find(&todo, &entity.ID).Error
+	err = todoRep.DB.Find(&todo, &t.ID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -57,13 +57,13 @@ func (todoRep *todoRepository) Get(todoId int) (todo *entity.Todo, err error) {
 	return
 }
 
-func (todoRep *todoRepository) Update(todoId int, entity *entity.Todo) (todo *entity.Todo, err error) {
-	err = todoRep.DB.Updates(&entity).Error
+func (todoRep *todoRepository) Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error) {
+	err = todoRep.DB.Updates(&t).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = todoRep.DB.Find(&todo, &entity.ID).Error
+	err = todoRep.DB.Find(&todo, &t.ID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -71,9 +71,9 @@ func (todoRep *todoRepository) Update(todoId int, entity *entity.Todo) (todo *en
 	return
 }
 
-func (todoRep *todoRepository) Delete(entity *entity.Todo) error {
+func (todoRep *todoRepository) Delete(t *entity.Todo) error {
 	if err := todoRep.DB.
-		Delete(&entity).
+		Delete(&t).
 		Error; err != nil {
 		return err
 	}

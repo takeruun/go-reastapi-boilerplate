@@ -8,7 +8,7 @@ import (
 type UserRepository interface {
 	FindAll() (uesrs *[]entity.User, err error)
 	FindByEmail(email string) (user *entity.User, err error)
-	Create(entity *entity.User) (user *entity.User, err error)
+	Create(u *entity.User) (user *entity.User, err error)
 }
 
 type userRepository struct {
@@ -41,13 +41,13 @@ func (userRep *userRepository) FindByEmail(email string) (user *entity.User, err
 	return
 }
 
-func (userRep *userRepository) Create(entity *entity.User) (user *entity.User, err error) {
-	err = userRep.DB.Create(&entity).Error
+func (userRep *userRepository) Create(u *entity.User) (user *entity.User, err error) {
+	err = userRep.DB.Create(&u).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = userRep.DB.Find(&user, &entity.ID).Error
+	err = userRep.DB.Find(&user, &u.ID).Error
 	if err != nil {
 		return nil, err
 	}
