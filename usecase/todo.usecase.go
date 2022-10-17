@@ -30,7 +30,7 @@ func NewTodoUsecase(todoRepo database.TodoRepository, sessionS service.SessionSe
 }
 
 func (tu *todoUsecase) FindAll(ctx context.Context) (todos []*entity.Todo, err error) {
-	session, _ := tu.sessionS.GetSession(ctx, "session")
+	session, _ := tu.sessionS.GetSession(ctx, "_goreset_session")
 	userId := session.Values["userId"].(uint64)
 
 	todos, err = tu.todoRepo.FindAll(userId)
@@ -39,7 +39,7 @@ func (tu *todoUsecase) FindAll(ctx context.Context) (todos []*entity.Todo, err e
 }
 
 func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todo *entity.Todo, err error) {
-	session, _ := tu.sessionS.GetSession(ctx, "session")
+	session, _ := tu.sessionS.GetSession(ctx, "_goreset_session")
 	userId := session.Values["userId"].(uint64)
 
 	entity := entity.Todo{Title: createParams.Title, Description: createParams.Description, UserId: userId}
@@ -52,7 +52,7 @@ func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateR
 }
 
 func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo, err error) {
-	session, _ := tu.sessionS.GetSession(ctx, "session")
+	session, _ := tu.sessionS.GetSession(ctx, "_goreset_session")
 	userId := session.Values["userId"].(uint64)
 
 	todo, err = tu.todoRepo.Get(todoId)

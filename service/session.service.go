@@ -47,7 +47,7 @@ func (service *sessionService) GetSession(ctx context.Context, name string) (*se
 }
 
 func (service *sessionService) GetSessionValue(ctx context.Context, key string) (interface{}, error) {
-	session, err := service.GetSession(ctx, "session")
+	session, err := service.GetSession(ctx, "_goreset_session")
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (service *sessionService) GetSessionValue(ctx context.Context, key string) 
 }
 
 func (service *sessionService) SaveSession(ctx context.Context, key string, value interface{}) error {
-	session, err := service.GetSession(ctx, "session")
+	session, err := service.GetSession(ctx, "_goreset_session")
 	if err != nil {
 		return err
 	}
