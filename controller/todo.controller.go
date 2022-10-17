@@ -4,6 +4,7 @@ import (
 	"app/controller/dto"
 	"app/usecase"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -30,12 +31,16 @@ func (todoCon *todoController) Index(w http.ResponseWriter, r *http.Request) {
 	todos, err := todoCon.todoU.FindAll(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	var data []byte
 	data, err = json.MarshalIndent(&todos, "", "\t\t")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	w.Write(data)
@@ -47,12 +52,16 @@ func (todoCon *todoController) Show(w http.ResponseWriter, r *http.Request, todo
 	todo, err := todoCon.todoU.Show(r.Context(), todoId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	var data []byte
 	data, err = json.MarshalIndent(&todo, "", "\t\t")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	w.Write(data)
@@ -73,6 +82,8 @@ func (todoCon *todoController) Edit(w http.ResponseWriter, r *http.Request, todo
 	data, err = json.MarshalIndent(&todo, "", "\t\t")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	w.Write(data)
@@ -90,12 +101,16 @@ func (todoCon *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	todo, err := todoCon.todoU.Create(r.Context(), &createParams)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	var data []byte
 	data, err = json.MarshalIndent(&todo, "", "\t\t")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	w.Write(data)
@@ -106,6 +121,8 @@ func (todoCon *todoController) Delete(w http.ResponseWriter, r *http.Request, to
 
 	if err := todoCon.todoU.Delete(r.Context(), todoId); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, err.Error())))
+		return
 	}
 
 	w.Write([]byte(`{"message": "ok"}`))
