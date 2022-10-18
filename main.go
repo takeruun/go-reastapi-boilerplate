@@ -16,16 +16,18 @@ func main() {
 
 	db := config.NewDB()
 	sessionStore := config.NewSessionStore(db)
+	mailServer := config.NewMailServer()
 
 	sessionService := service.NewSessionService(sessionStore)
 	cyptoService := service.NewCyptoService()
+	mailService := service.NewMailService(mailServer)
 
 	userRepository := database.NewUserRepository(db)
 	todoRepository := database.NewTodoRepository(db)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	todoUsecase := usecase.NewTodoUsecase(todoRepository, sessionService)
-	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService, cyptoService)
+	authUsecase := usecase.NewAuthUsecase(userRepository, sessionService, cyptoService, mailService)
 
 	appController := controller.NewAppController()
 	userController := controller.NewUserController(userUsecase)

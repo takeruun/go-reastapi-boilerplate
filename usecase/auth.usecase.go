@@ -18,13 +18,15 @@ type authUsecase struct {
 	userRepo database.UserRepository
 	sessionS service.SessionService
 	cyptoS   service.CyptoService
+	mailS    service.MailService
 }
 
-func NewAuthUsecase(userRepo database.UserRepository, sessionS service.SessionService, cyptoS service.CyptoService) AuthUsecase {
+func NewAuthUsecase(userRepo database.UserRepository, sessionS service.SessionService, cyptoS service.CyptoService, mailS service.MailService) AuthUsecase {
 	return &authUsecase{
 		userRepo: userRepo,
 		sessionS: sessionS,
 		cyptoS:   cyptoS,
+		mailS:    mailS,
 	}
 }
 
