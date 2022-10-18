@@ -50,10 +50,10 @@ func (mr *MockUserRepositoryMockRecorder) Create(u interface{}) *gomock.Call {
 }
 
 // FindAll mocks base method.
-func (m *MockUserRepository) FindAll() (*[]entity.User, error) {
+func (m *MockUserRepository) FindAll() ([]*entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].(*[]entity.User)
+	ret0, _ := ret[0].([]*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

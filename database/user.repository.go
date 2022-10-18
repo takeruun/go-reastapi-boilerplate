@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	FindAll() (uesrs *[]entity.User, err error)
+	FindAll() (uesrs []*entity.User, err error)
 	FindByEmail(email string) (user *entity.User, err error)
 	Create(u *entity.User) (user *entity.User, err error)
 }
@@ -19,7 +19,7 @@ func NewUserRepository(DB *config.DB) UserRepository {
 	return &userRepository{DB: DB}
 }
 
-func (userRep *userRepository) FindAll() (users *[]entity.User, err error) {
+func (userRep *userRepository) FindAll() (users []*entity.User, err error) {
 	err = userRep.DB.Model(&entity.User{}).
 		Find(&users).
 		Error

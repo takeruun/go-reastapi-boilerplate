@@ -6,7 +6,7 @@ import (
 )
 
 type UserUsecase interface {
-	FindAll() (users *[]entity.User, err error)
+	FindAll() (users []*entity.User, err error)
 }
 
 type userUsecase struct {
@@ -19,6 +19,6 @@ func NewUserUsecase(userRepo database.UserRepository) UserUsecase {
 	}
 }
 
-func (uu *userUsecase) FindAll() (users *[]entity.User, err error) {
+func (uu *userUsecase) FindAll() (users []*entity.User, err error) {
 	return uu.userRepo.FindAll()
 }
