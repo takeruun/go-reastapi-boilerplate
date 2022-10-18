@@ -32,7 +32,7 @@ func (userRep *userRepository) FindAll() (users []*entity.User, err error) {
 }
 
 func (userRep *userRepository) FindByEmail(email string) (user *entity.User, err error) {
-	err = userRep.DB.Find(&user, "email = ?", email).Error
+	err = userRep.DB.First(&user, "email = ?", email).Error
 
 	if err != nil {
 		return nil, err
