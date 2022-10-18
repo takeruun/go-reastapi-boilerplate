@@ -28,9 +28,7 @@ func setUp(t *testing.T) func() {
 	mockCyptoService = mock_service.NewMockCyptoService(ctrl)
 	mockSessionService = mock_service.NewMockSessionService(ctrl)
 
-	return func() {
-		defer ctrl.Finish()
-	}
+	return func() {}
 }
 
 func TestSignIn(t *testing.T) {
