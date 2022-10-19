@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+const (
+	charactorLimitForOneLine = 78
+)
+
 type MailService interface {
 	Send(to string, subject string, body string) error
 }
@@ -23,68 +27,72 @@ func NewMailService(Mail *config.MailServer) MailService {
 	}
 }
 
-func (m *mailService) writeString(b *bytes.Buffer, s string) *bytes.Buffer {
-	_, err := b.WriteString(s)
-	if err != nil {
-		fmt.Println(err.Error())
+// 適切な長さにカットしCRLFを挿入
+func (m *mailService) cutAndAddCrlf(msg string) string {
+	buffer := bytes.Buffer{}
+	for k, c := range strings.Split(msg, "") {
+		buffer.WriteString(c)
+		if (k+1)%charactorLimitForOneLine == 0 {
+			buffer.WriteString("\r\n")
+		}
 	}
-	return b
+	return buffer.String()
 }
 
-// サブジェクトを MIME エンコードする
+func (m *mailService) makeMailBody(body string) string {
+	encodedBody := base64.StdEncoding.EncodeToString([]byte(body))
+	return m.cutAndAddCrlf(encodedBody)
+}
+
+// UTF8文字列を指定文字数で分割
+func (m *mailService) utf8Split(utf8string string, length int) []string {
+	result := []string{}
+	buffer := bytes.Buffer{}
+	for k, c := range strings.Split(utf8string, "") {
+		buffer.WriteString(c)
+		if (k+1)%length == 0 {
+			result = append(result, buffer.String())
+			buffer.Reset()
+		}
+	}
+	if buffer.Len() > 0 {
+		result = append(result, buffer.String())
+	}
+	return result
+}
+
+// タイトルをMIMEエンコード
 func (m *mailService) encodeSubject(subject string) string {
-	// UTF8 文字列を指定文字数で分割する
-	b := bytes.NewBuffer([]byte(""))
-	strs := []string{}
-	length := 13
-	for k, c := range strings.Split(subject, "") {
-		b.WriteString(c)
-		if k%length == length-1 {
-			strs = append(strs, b.String())
-			b.Reset()
-		}
+	buffer := bytes.Buffer{}
+	buffer.WriteString("Subject:")
+	limit := charactorLimitForOneLine / 6 // Unicodeでは一文字が最大6バイトになるため
+	for _, line := range m.utf8Split(subject, limit) {
+		buffer.WriteString(" =?utf-8?B?")
+		buffer.WriteString(base64.StdEncoding.EncodeToString([]byte(line)))
+		buffer.WriteString("?=\r\n")
 	}
-	if b.Len() > 0 {
-		strs = append(strs, b.String())
-	}
-	// MIME エンコードする
-	b2 := bytes.NewBuffer([]byte(""))
-	b2.WriteString("Subject:")
-	for _, line := range strs {
-		b2.WriteString(" =?utf-8?B?")
-		b2.WriteString(base64.StdEncoding.EncodeToString([]byte(line)))
-		b2.WriteString("?=\r\n")
-	}
-	return b2.String()
+	return buffer.String()
 }
 
-// 本文を 76 バイト毎に CRLF を挿入して返す
-func (m *mailService) encodeBody(body string) string {
-	b := bytes.NewBufferString(body)
-	s := base64.StdEncoding.EncodeToString(b.Bytes())
-	b2 := bytes.NewBuffer([]byte(""))
-	for k, c := range strings.Split(s, "") {
-		b2.WriteString(c)
-		if k%76 == 75 {
-			b2.WriteString("\r\n")
-		}
-	}
-	return b2.String()
+// ヘッダを作る
+func (m *mailService) makeMailHeader(to, subject string) bytes.Buffer {
+	header := bytes.Buffer{}
+	header.WriteString("From: " + m.Mail.From.String() + "\r\n")
+	header.WriteString("To: " + to + "\r\n")
+	header.WriteString(m.encodeSubject(subject))
+	header.WriteString("MIME-Version: 1.0\r\n")
+	header.WriteString("Content-Type: text/plain; charset=\"utf-8\"\r\n")
+	header.WriteString("Content-Transfer-Encoding: base64\r\n")
+
+	return header
 }
 
-func (m *mailService) Send(to string, subject string, body string) error {
-	msg := bytes.NewBuffer([]byte(""))
-	msg = m.writeString(msg, "From: "+m.Mail.From.String()+"\r\n")
-	msg = m.writeString(msg, "To: "+to+"\r\n")
-	// msg = m.writeString(msg, "Subject: " + subject + "\r\n")
-	msg = m.writeString(msg, m.encodeSubject(subject))
-	msg = m.writeString(msg, "MIME-Version: 1.0\r\n")
-	msg = m.writeString(msg, "Content-Type: text/plain; charset=\"utf-8\"\r\n")
-	msg = m.writeString(msg, "Content-Transfer-Encoding: base64\r\n")
-	msg = m.writeString(msg, "\r\n")
+func (m *mailService) Send(to, subject, body string) error {
+	mailHeader := m.makeMailHeader(to, subject)
+	mailBody := m.makeMailBody(body)
 
-	// msg = m.writeString(msg, base64.StdEncoding.EncodeToString([]byte(body)) + "\r\n")
-	msg = m.writeString(msg, m.encodeBody(body))
+	msg := mailHeader
+	msg.WriteString(mailBody)
 
 	if err := smtp.SendMail(m.Mail.Addr, m.Mail.Auth, m.Mail.From.Address, []string{to}, msg.Bytes()); err != nil {
 		return err
