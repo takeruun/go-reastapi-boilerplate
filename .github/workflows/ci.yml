@@ -51,7 +51,7 @@ jobs:
           DB_USER: root
           DB_PASSWORD: password
           DB_HOST: 127.0.0.1
-          DB_NAME: changeable
+          DB_NAME: resetapi
           SECRET_HASH_KEY: welkfaIEeifne212iiIDewaf
         run: |
           go test ./test/... -test.v
