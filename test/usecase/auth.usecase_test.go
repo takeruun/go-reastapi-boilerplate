@@ -18,6 +18,7 @@ import (
 var mockUserRepository *mock_database.MockUserRepository
 var mockCyptoService *mock_service.MockCyptoService
 var mockSessionService *mock_service.MockSessionService
+var mockMailServive *mock_service.MockMailService
 var authUsecase usecase.AuthUsecase
 
 func setUp(t *testing.T) func() {
@@ -27,6 +28,7 @@ func setUp(t *testing.T) func() {
 	mockUserRepository = mock_database.NewMockUserRepository(ctrl)
 	mockCyptoService = mock_service.NewMockCyptoService(ctrl)
 	mockSessionService = mock_service.NewMockSessionService(ctrl)
+	mockMailServive = mock_service.NewMockMailService(ctrl)
 
 	return func() {}
 }
@@ -50,6 +52,7 @@ func TestSignIn(t *testing.T) {
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
+			mockMailServive,
 		)
 
 		err := authUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
@@ -66,6 +69,7 @@ func TestSignIn(t *testing.T) {
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
+			mockMailServive,
 		)
 
 		err := authUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
@@ -96,6 +100,7 @@ func TestSignUp(t *testing.T) {
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
+			mockMailServive,
 		)
 
 		err := authUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
@@ -114,6 +119,7 @@ func TestSignUp(t *testing.T) {
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
+			mockMailServive,
 		)
 
 		err = authUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
