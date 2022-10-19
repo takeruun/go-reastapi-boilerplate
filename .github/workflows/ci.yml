@@ -1,0 +1,63 @@
+name: ci
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - develop
+
+jobs:
+  go-fmt:
+    name: Go format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: technote-space/get-diff-action@v6
+        id: check-diff
+        with:
+          PATTERNS: |
+            **/*
+            !front/**/*
+      - uses: ./.github/actions/setup-go
+        if: steps.check-diff.outputs.diff
+      - name: Run gofmt
+        run: gofmt -l -s -w .
+        id: fmt-diff
+        if: steps.check-diff.outputs.diff
+      - name: Check failure
+        run: exit 1
+        if: steps.fmt-diff.outputs.diff
+
+  go-test:
+    name: Backend Api Test
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:8.0.28
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-go
+      - name: Set DB
+        run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `resetapi-test`;'
+      - name: Install sql-migrate
+        run: go install github.com/rubenv/sql-migrate/...@v1.2.0
+      - name: Run test
+        env:
+          GO_MODE: test
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_HOST: 127.0.0.1
+          DB_NAME: resetapi
+          SECRET_HASH_KEY: welkfaIEeifne212iiIDewaf
+        run: |
+          sql-migrate up -env="test"
+          go test ./test/... -test.v
+      - uses: ./.github/actions/notify-for-slack
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
