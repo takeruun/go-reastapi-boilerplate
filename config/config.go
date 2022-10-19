@@ -7,6 +7,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	applicationDir = "app/"
+)
+
 type Config struct {
 	DB struct {
 		Host     string
@@ -34,9 +38,9 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	err := godotenv.Load(".env")
+	err := godotenv.Load(os.ExpandEnv("/go/src/" + applicationDir + ".env"))
 	if err != nil {
-		fmt.Printf("env file 読み込み出来ませんでした。")
+		fmt.Println("env file 読み込み出来ませんでした。")
 	}
 	c := new(Config)
 
