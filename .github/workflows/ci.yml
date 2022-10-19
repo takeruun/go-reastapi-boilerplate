@@ -46,7 +46,7 @@ jobs:
       - name: Set DB
         run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `resetapi-test`;'
       - name: Install sql-migrate
-        run go install github.com/rubenv/sql-migrate/...v1.2.0
+        run: go install github.com/rubenv/sql-migrate/...v1.2.0
       - name: db migrate
         run: sql-migrate up -env="test"
       - name: Run test
