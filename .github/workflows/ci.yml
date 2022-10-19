@@ -45,6 +45,8 @@ jobs:
       - uses: ./.github/actions/setup-go
       - name: Set DB
         run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `resetapi-test`;'
+      - name: db migrate
+        run: sql-migrate up -env="test"
       - name: Run test
         env:
           GO_MODE: test
