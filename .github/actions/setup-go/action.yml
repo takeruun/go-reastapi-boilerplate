@@ -1,0 +1,15 @@
+name: Setup for Go CI
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '1.19.2'
+    - uses: actions/cache@v2
+      id: cache-go
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
