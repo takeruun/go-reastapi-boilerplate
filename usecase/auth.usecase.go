@@ -48,6 +48,8 @@ func (uu *authUsecase) SignIn(ctx context.Context, signInParams *dto.AuthSignInR
 		return err
 	}
 
+	uu.mailS.SendMail("hstake@gmail.com", "subject string", "body string ボディ")
+
 	return nil
 }
 

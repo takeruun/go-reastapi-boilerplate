@@ -119,6 +119,12 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
+github.com/takeruun/gomail v0.1.0 h1:sESlPXT5bM7Jytd+QVu16fKn1L1bJYmy2a1a45uDGbk=
+github.com/takeruun/gomail v0.1.0/go.mod h1:ZmVo4Ve84Snu1bBNOTdw4lvf3biUcVWbUTlpBZiENY0=
+github.com/takeruun/gomail v0.1.1 h1:CqZQSzdD/DbsrDdbL9XdbggqrHGCowlhIQmrw8HS79w=
+github.com/takeruun/gomail v0.1.1/go.mod h1:ZmVo4Ve84Snu1bBNOTdw4lvf3biUcVWbUTlpBZiENY0=
+github.com/takeruun/gomail v0.1.2 h1:SBTHUTTKRhr8jlILvDGNLEjLMt49OFlXu+ULUIgDYmE=
+github.com/takeruun/gomail v0.1.2/go.mod h1:ZmVo4Ve84Snu1bBNOTdw4lvf3biUcVWbUTlpBZiENY0=
 github.com/wader/gormstore/v2 v2.0.3 h1:/29GWPauY8xZkpLnB8hsp+dZfP3ivA9fiDw1YVNTp6U=
 github.com/wader/gormstore/v2 v2.0.3/go.mod h1:sr3N3a8F1+PBc3fHoKaphFqDXLRJ9Oe6Yow0HxKFbbg=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=

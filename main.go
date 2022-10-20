@@ -16,7 +16,7 @@ func main() {
 
 	db := config.NewDB()
 	sessionStore := config.NewSessionStore(db)
-	mailServer := config.NewMailServer()
+	mailServer := config.NewMail()
 
 	sessionService := service.NewSessionService(sessionStore)
 	cyptoService := service.NewCyptoService()
