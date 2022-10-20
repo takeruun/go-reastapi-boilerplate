@@ -43,6 +43,15 @@ TODOリストAPI
 | Todo更新 | PUT | /todos/id/ | あり |
 | Todo削除 | DELETE | /todos/id/ | あり |
 
+## ミドルウェア対応パス表
+| パス | [Cors](./middleware/auth.middleware.go) | [WriteHeader](./middleware/write_header.middleware.go) | [Auth](./middleware/auth.middleware.go) | [SetHttpContext](./middleware/set_http_context.middleware.go) |
+|-|-|-|-|-|
+|/|x|x|x|x|
+|/toods/*|○|○|○|○|
+|/auth/sign_in|○|○|x|○|
+|/auth/sign_up|○|○|x|○|
+|/auth/user/*|○|○|○|○|
+
 # 環境構築
 ## 1. ルートディレクトリに「.env」ファイルの用意
 ```
