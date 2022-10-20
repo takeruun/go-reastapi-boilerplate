@@ -3,6 +3,8 @@ package router
 import (
 	"app/middleware"
 	"net/http"
+
+	"github.com/wader/gormstore/v2"
 )
 
 type Router interface {
@@ -14,14 +16,16 @@ type router struct {
 	userRoute UserRouter
 	authRoute AuthRouter
 	todoRoute TodoRouter
+	store     *gormstore.Store
 }
 
-func NewRouter(appRoute AppRouter, userRoute UserRouter, authRoute AuthRouter, todoRoute TodoRouter) Router {
+func NewRouter(appRoute AppRouter, userRoute UserRouter, authRoute AuthRouter, todoRoute TodoRouter, store *gormstore.Store) Router {
 	return &router{
 		appRoute:  appRoute,
 		userRoute: userRoute,
 		authRoute: authRoute,
 		todoRoute: todoRoute,
+		store:     store,
 	}
 }
 
@@ -34,6 +38,7 @@ func (r *router) SetRouting() {
 					middleware.SetHttpContextMiddleware(
 						http.HandlerFunc(r.userRoute.HandleUserRequest),
 					),
+					r.store,
 				),
 			),
 		),
@@ -45,6 +50,7 @@ func (r *router) SetRouting() {
 					middleware.SetHttpContextMiddleware(
 						http.HandlerFunc(r.todoRoute.HandleTodoRequest),
 					),
+					r.store,
 				),
 			),
 		),

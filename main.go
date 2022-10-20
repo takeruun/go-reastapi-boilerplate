@@ -38,7 +38,7 @@ func main() {
 	userRoute := router.NewUserRouter(userController)
 	authRoute := router.NewAuthRouter(authController)
 	todoRoute := router.NewTodoRouter(todoController)
-	r := router.NewRouter(appRoute, userRoute, authRoute, todoRoute)
+	r := router.NewRouter(appRoute, userRoute, authRoute, todoRoute, sessionStore)
 	r.SetRouting()
 
 	http.ListenAndServe(":3000", nil)

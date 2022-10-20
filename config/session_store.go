@@ -7,6 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	SESSION_KEY_NAME = "_goreset_session"
+)
+
 type SESSION_STORE struct {
 	SECRET_HASH_KEY string
 }
