@@ -12,6 +12,9 @@ import (
 type AuthUsecase interface {
 	SignIn(ctx context.Context, signInParams *dto.AuthSignInRequestDto) error
 	SignUp(ctx context.Context, signInParams *dto.AuthSignUpRequestDto) error
+	Show(ctx context.Context) (user *entity.User, err error)
+	Edit(ctx context.Context, userUpdateParams *dto.AuthUserUpdateRequestDto) (user *entity.User, err error)
+	Delete(ctx context.Context) error
 }
 
 type authUsecase struct {
@@ -64,6 +67,49 @@ func (uu *authUsecase) SignUp(ctx context.Context, signInParams *dto.AuthSignUpR
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (uu *authUsecase) Show(ctx context.Context) (user *entity.User, err error) {
+	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
+	userId := session.Values["userId"].(uint64)
+
+	user, err = uu.userRepo.Find(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return
+}
+
+func (uu *authUsecase) Edit(ctx context.Context, userUpdateParams *dto.AuthUserUpdateRequestDto) (user *entity.User, err error) {
+	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
+	userId := session.Values["userId"].(uint64)
+
+	u := &entity.User{
+		ID:    userId,
+		Name:  userUpdateParams.Name,
+		Email: userUpdateParams.Email,
+	}
+
+	user, err = uu.userRepo.Update(u)
+	if err != nil {
+		return nil, err
+	}
+
+	return
+}
+
+func (uu *authUsecase) Delete(ctx context.Context) error {
+	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
+	userId := session.Values["userId"].(uint64)
+
+	if err := uu.userRepo.Delete(userId); err != nil {
+		return nil
+	}
+
+	uu.sessionS.DeleteSession(ctx)
 
 	return nil
 }

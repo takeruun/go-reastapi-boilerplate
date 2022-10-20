@@ -12,6 +12,7 @@ type SessionService interface {
 	GetSession(ctx context.Context, name string) (*sessions.Session, error)
 	GetSessionValue(ctx context.Context, key string) (interface{}, error)
 	SaveSession(ctx context.Context, key string, value interface{}) error
+	DeleteSession(ctx context.Context) error
 }
 
 type sessionService struct {
@@ -63,6 +64,22 @@ func (service *sessionService) SaveSession(ctx context.Context, key string, valu
 
 	session.Values[key] = value
 
+	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
+	err = service.store.Save(httpContext.R, *httpContext.W, session)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *sessionService) DeleteSession(ctx context.Context) error {
+	session, err := service.GetSession(ctx, "_goreset_session")
+	if err != nil {
+		return err
+	}
+
+	session.Options.MaxAge = -1
 	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
 	err = service.store.Save(httpContext.R, *httpContext.W, session)
 	if err != nil {

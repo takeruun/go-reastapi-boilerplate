@@ -67,4 +67,16 @@ func (r *router) SetRouting() {
 			),
 		),
 	)
+	http.Handle("/auth/user/",
+		middleware.CorsMiddleware(
+			middleware.WriteHeaderMiddleware(
+				middleware.AuthMiddleware(
+					middleware.SetHttpContextMiddleware(
+						http.HandlerFunc(r.authRoute.UserRequest),
+					),
+					r.store,
+				),
+			),
+		),
+	)
 }

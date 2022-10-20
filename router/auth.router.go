@@ -8,6 +8,7 @@ import (
 type AuthRouter interface {
 	SignInRequest(w http.ResponseWriter, r *http.Request)
 	SignUpRequest(w http.ResponseWriter, r *http.Request)
+	UserRequest(w http.ResponseWriter, r *http.Request)
 }
 
 type authRouter struct {
@@ -26,4 +27,15 @@ func (ar *authRouter) SignInRequest(w http.ResponseWriter, r *http.Request) {
 
 func (ar *authRouter) SignUpRequest(w http.ResponseWriter, r *http.Request) {
 	ar.authC.SignUp(w, r)
+}
+
+func (ar *authRouter) UserRequest(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		ar.authC.Show(w, r)
+	case "PUT":
+		ar.authC.Edit(w, r)
+	case "DELETE":
+		ar.authC.Delete(w, r)
+	}
 }
