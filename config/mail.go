@@ -8,20 +8,14 @@ type Mail struct {
 
 func NewMail() *Mail {
 	config := NewConfig()
+
 	gomailConfig := &gomail.Config{
-		Auth: struct {
-			Host     string
-			Email    string
-			Password string
-		}{
+		Auth: gomail.Auth{
 			Host:     config.Mail.Auth.Host,
 			Email:    config.Mail.Auth.Email,
 			Password: config.Mail.Auth.Password,
 		},
-		From: struct {
-			Name  string
-			Email string
-		}{
+		From: gomail.From{
 			Name:  config.Mail.From.Name,
 			Email: config.Mail.From.Email,
 		},
