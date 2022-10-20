@@ -22,35 +22,35 @@ TODOリストAPI
 | - | GET | / | なし |
 
 ### ユーザー認証API
-|   | メソッド | URI | 認証有無 |
-| - | ------- | --- | ------ |
-| ログイン | POST | /auth/sign_in/ | なし |
-| 会員登録 | POST | /auth/sign_up/ | なし |
+|   | メソッド | URI | 認証有無 | クエリ | リクエストボディ |
+| - | ------- | --- | ------ | - | - |
+| ログイン | POST | /auth/sign_in/ | なし | | [AuthSignInRequestDto](./controller/dto/auth.dto.go#L3) |
+| 会員登録 | POST | /auth/sign_up/ | なし |  |[AuthSignUpRequestDto](./controller/dto/auth.dto.go#L8) |
 
 ### ログインユーザーAPI
-|   | メソッド | URI | 認証有無 |
-| - | ------- | --- | ------ |
-| ログインユーザー情報取得 | GET | /auth/user/ | あり |
-| ユーザー更新 | PUT | /auth/user/ | あり |
-| ユーザー削除 | DELETE | /auth/user/ | あり |
+|   | メソッド | URI | 認証有無 | クエリ | リクエストボディ |
+| - | ------- | --- | ------ | - | - |
+| ログインユーザー情報取得 | GET | /auth/user/ | あり | | 
+| ユーザー更新 | PUT | /auth/user/ | あり | | [AuthUserUpdateRequestDto](./controller/dto/auth.dto.go#L14) |
+| ユーザー削除 | DELETE | /auth/user/ | あり | | |
 
 ### TodoAPI
-|   | メソッド | URI | 認証有無 |
-| - | ------- | --- | ------ |
-| ユーザーに紐づく全Todoデータ取得 | GET | /todos/ | あり |
-| 単一Todoデータ取得 | POST | /todos/id/ | あり |
-| Todo新規作成 | POST | /todos/ | あり |
-| Todo更新 | PUT | /todos/id/ | あり |
+|   | メソッド | URI | 認証有無 | クエリ | リクエストボディ |
+| - | ------- | --- | ------ | - | - |
+| ユーザーに紐づく全Todoデータ取得 | GET | /todos/ | あり | | |
+| 単一Todoデータ取得 | POST | /todos/id/ | あり | | |
+| Todo新規作成 | POST | /todos/ | あり | | [TodoCreateRequestDto](./controller/dto/todo.dto.go#L3) |
+| Todo更新 | PUT | /todos/id/ | あり | | [TodoCreateRequestDto](./controller/dto/todo.dto.go#L8) |
 | Todo削除 | DELETE | /todos/id/ | あり |
 
 ## ミドルウェア対応パス表
-| パス | [Cors](./middleware/auth.middleware.go) | [WriteHeader](./middleware/write_header.middleware.go) | [Auth](./middleware/auth.middleware.go) | [SetHttpContext](./middleware/set_http_context.middleware.go) |
+| URI | [Cors](./middleware/auth.middleware.go) | [WriteHeader](./middleware/write_header.middleware.go) | [Auth](./middleware/auth.middleware.go) | [SetHttpContext](./middleware/set_http_context.middleware.go) |
 |-|-|-|-|-|
 |/|x|x|x|x|
-|/toods/*|○|○|○|○|
-|/auth/sign_in|○|○|x|○|
-|/auth/sign_up|○|○|x|○|
-|/auth/user/*|○|○|○|○|
+|/toods/*/|○|○|○|○|
+|/auth/sign_in/|○|○|x|○|
+|/auth/sign_up/|○|○|x|○|
+|/auth/user/*/|○|○|○|○|
 
 # 環境構築
 ## 1. ルートディレクトリに「.env」ファイルの用意
