@@ -72,10 +72,9 @@ func (uu *authUsecase) SignUp(ctx context.Context, signInParams *dto.AuthSignUpR
 }
 
 func (uu *authUsecase) Show(ctx context.Context) (user *entity.User, err error) {
-	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
-	userId := session.Values["userId"].(uint64)
+	userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
 
-	user, err = uu.userRepo.Find(userId)
+	user, err = uu.userRepo.Find(userId.(uint64))
 	if err != nil {
 		return nil, err
 	}
@@ -84,11 +83,10 @@ func (uu *authUsecase) Show(ctx context.Context) (user *entity.User, err error) 
 }
 
 func (uu *authUsecase) Edit(ctx context.Context, userUpdateParams *dto.AuthUserUpdateRequestDto) (user *entity.User, err error) {
-	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
-	userId := session.Values["userId"].(uint64)
+	userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
 
 	u := &entity.User{
-		ID:    userId,
+		ID:    userId.(uint64),
 		Name:  userUpdateParams.Name,
 		Email: userUpdateParams.Email,
 	}
@@ -102,10 +100,9 @@ func (uu *authUsecase) Edit(ctx context.Context, userUpdateParams *dto.AuthUserU
 }
 
 func (uu *authUsecase) Delete(ctx context.Context) error {
-	session, _ := uu.sessionS.GetSession(ctx, "_goreset_session")
-	userId := session.Values["userId"].(uint64)
+	userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
 
-	if err := uu.userRepo.Delete(userId); err != nil {
+	if err := uu.userRepo.Delete(userId.(uint64)); err != nil {
 		return nil
 	}
 
