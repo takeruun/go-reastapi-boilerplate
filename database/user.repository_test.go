@@ -28,9 +28,9 @@ func setUp(t *testing.T) func() {
 
 func setIntialData() {
 	data := []entity.User{
-		{Name: "test1", Email: "test1@example.com", HashPassword: "d2fka"},
-		{Name: "test2", Email: "test2@example.com", HashPassword: "d2fasdlfka"},
-		{Name: "test3", Email: "test3@example.com", HashPassword: "d2fka"},
+		{ID: 1, Name: "test1", Email: "test1@example.com", HashPassword: "d2fka"},
+		{ID: 2, Name: "test2", Email: "test2@example.com", HashPassword: "d2fasdlfka"},
+		{ID: 3, Name: "test3", Email: "test3@example.com", HashPassword: "d2fka"},
 	}
 	db.Create(&data)
 }
@@ -46,6 +46,32 @@ func TestFindAll(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, len(result), 3)
+	})
+
+}
+
+func TestFind(t *testing.T) {
+	setup := setUp(t)
+	defer setup()
+
+	setIntialData()
+
+	var userId uint64 = 1
+
+	t.Run("success", func(t *testing.T) {
+		result, err := userRepository.Find(userId)
+
+		assert.NoError(t, err)
+		assert.Equal(t, userId, result.ID)
+	})
+
+	t.Run("If the user is not found", func(t *testing.T) {
+		userId = 0
+
+		_, err := userRepository.Find(userId)
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
 	})
 }
 

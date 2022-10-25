@@ -1,0 +1,670 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>database: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">app/database/todo.repository.go (0.0%)</option>
+				
+				<option value="file1">app/database/user.repository.go (64.3%)</option>
+				
+				<option value="file2">app/service/cypto_service.go (0.0%)</option>
+				
+				<option value="file3">app/service/mail_service.go (0.0%)</option>
+				
+				<option value="file4">app/service/session_service.go (0.0%)</option>
+				
+				<option value="file5">app/usecase/auth.usecase.go (45.9%)</option>
+				
+				<option value="file6">app/usecase/todo.usecase.go (0.0%)</option>
+				
+				<option value="file7">app/usecase/user.usecase.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package database
+
+import (
+        "app/config"
+        "app/entity"
+)
+
+type TodoRepository interface {
+        FindAll(userId uint64) (todos []*entity.Todo, err error)
+        Create(t *entity.Todo) (todo *entity.Todo, err error)
+        Get(todoId int) (todo *entity.Todo, err error)
+        Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error)
+        Delete(t *entity.Todo) error
+}
+
+type todoRepository struct {
+        DB *config.DB
+}
+
+func NewTodoRepository(DB *config.DB) TodoRepository <span class="cov0" title="0">{
+        return &amp;todoRepository{DB: DB}
+}</span>
+
+func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err error) <span class="cov0" title="0">{
+        err = todoRep.DB.Model(&amp;entity.Todo{}).
+                Where("user_id = ?", userId).
+                Find(&amp;todos).
+                Error
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (todoRep *todoRepository) Create(t *entity.Todo) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        err = todoRep.DB.Create(&amp;t).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">err = todoRep.DB.Find(&amp;todo, &amp;t.ID).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (todoRep *todoRepository) Get(todoId int) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        err = todoRep.DB.Find(&amp;todo, todoId).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (todoRep *todoRepository) Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        err = todoRep.DB.Updates(&amp;t).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">err = todoRep.DB.Find(&amp;todo, &amp;t.ID).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (todoRep *todoRepository) Delete(t *entity.Todo) error <span class="cov0" title="0">{
+        if err := todoRep.DB.
+                Delete(&amp;t).
+                Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package database
+
+import (
+        "app/config"
+        "app/entity"
+)
+
+type UserRepository interface {
+        FindAll() (uesrs []*entity.User, err error)
+        Find(userId uint64) (user *entity.User, err error)
+        FindByEmail(email string) (user *entity.User, err error)
+        Create(u *entity.User) (user *entity.User, err error)
+        Update(u *entity.User) (user *entity.User, err error)
+        Delete(userId uint64) error
+}
+
+type userRepository struct {
+        DB *config.DB
+}
+
+func NewUserRepository(DB *config.DB) UserRepository <span class="cov8" title="1">{
+        return &amp;userRepository{DB: DB}
+}</span>
+
+func (userRep *userRepository) FindAll() (users []*entity.User, err error) <span class="cov8" title="1">{
+        err = userRep.DB.Model(&amp;entity.User{}).
+                Find(&amp;users).
+                Error
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func (userRep *userRepository) Find(userId uint64) (user *entity.User, err error) <span class="cov8" title="1">{
+        err = userRep.DB.First(&amp;user, userId).Error
+
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func (userRep *userRepository) FindByEmail(email string) (user *entity.User, err error) <span class="cov8" title="1">{
+        err = userRep.DB.First(&amp;user, "email = ?", email).Error
+
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func (userRep *userRepository) Create(u *entity.User) (user *entity.User, err error) <span class="cov8" title="1">{
+        err = userRep.DB.Create(&amp;u).Error
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">err = userRep.DB.Find(&amp;user, &amp;u.ID).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return user, nil</span>
+}
+
+func (userRep *userRepository) Update(u *entity.User) (user *entity.User, err error) <span class="cov0" title="0">{
+        err = userRep.DB.Updates(&amp;u).Error
+
+        err = userRep.DB.First(&amp;user, &amp;u.ID).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (userRep *userRepository) Delete(userId uint64) error <span class="cov0" title="0">{
+        if err := userRep.DB.Model(&amp;entity.User{}).Delete("id = ?", userId).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package service
+
+import "golang.org/x/crypto/bcrypt"
+
+type CyptoService interface {
+        HashAndSalt(pwd []byte) (string, error)
+        ComparePasswords(hashedPwd string, plainPwd []byte) bool
+}
+
+type cyptoService struct{}
+
+func NewCyptoService() CyptoService <span class="cov0" title="0">{
+        return &amp;cyptoService{}
+}</span>
+
+func (c *cyptoService) HashAndSalt(pwd []byte) (string, error) <span class="cov0" title="0">{
+        hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov0" title="0">return string(hash), nil</span>
+}
+
+func (c *cyptoService) ComparePasswords(hashedPwd string, plainPwd []byte) bool <span class="cov0" title="0">{
+        byteHash := []byte(hashedPwd)
+        err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
+        if err != nil </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package service
+
+import (
+        "app/config"
+)
+
+type MailService interface {
+        SendMail(to, subject, body string) error
+}
+
+type mailService struct {
+        Mail *config.Mail
+}
+
+func NewMailService(Mail *config.Mail) MailService <span class="cov0" title="0">{
+        return &amp;mailService{
+                Mail: Mail,
+        }
+}</span>
+
+func (m *mailService) SendMail(to, subject, body string) error <span class="cov0" title="0">{
+        if err := m.Mail.Send(to, subject, body); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package service
+
+import (
+        "app/config"
+        "context"
+        "net/http"
+
+        "github.com/gorilla/sessions"
+        "github.com/wader/gormstore/v2"
+)
+
+type SessionService interface {
+        GetSessionValue(ctx context.Context, key string) (interface{}, error)
+        SaveSession(ctx context.Context, key string, value interface{}) error
+        DeleteSession(ctx context.Context) error
+}
+
+type sessionService struct {
+        store *gormstore.Store
+}
+
+func NewSessionService(s *gormstore.Store) SessionService <span class="cov0" title="0">{
+        return &amp;sessionService{
+                store: s,
+        }
+}</span>
+
+// HTTPKey is the key used to extract the Http struct.
+type HTTPKey string
+
+// HTTP is the struct used to inject the response writer and request http structs.
+type HTTP struct {
+        W *http.ResponseWriter
+        R *http.Request
+}
+
+// GetSession returns a cached session of the given name
+func (service *sessionService) GetSession(ctx context.Context, name string) (*sessions.Session, error) <span class="cov0" title="0">{
+        httpContext := ctx.Value(HTTPKey("http")).(HTTP)
+
+        // Ignore err because a session is always returned even if one doesn't exist
+        session, err := service.store.Get(httpContext.R, name)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return session, nil</span>
+}
+
+func (service *sessionService) GetSessionValue(ctx context.Context, key string) (interface{}, error) <span class="cov0" title="0">{
+        session, err := service.GetSession(ctx, config.SESSION_KEY_NAME)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov0" title="0">return session.Values[key], nil</span>
+}
+
+func (service *sessionService) SaveSession(ctx context.Context, key string, value interface{}) error <span class="cov0" title="0">{
+        session, err := service.GetSession(ctx, config.SESSION_KEY_NAME)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">session.Values[key] = value
+
+        httpContext := ctx.Value(HTTPKey("http")).(HTTP)
+        err = service.store.Save(httpContext.R, *httpContext.W, session)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (service *sessionService) DeleteSession(ctx context.Context) error <span class="cov0" title="0">{
+        session, err := service.GetSession(ctx, config.SESSION_KEY_NAME)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">session.Options.MaxAge = -1
+        httpContext := ctx.Value(HTTPKey("http")).(HTTP)
+        err = service.store.Save(httpContext.R, *httpContext.W, session)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package usecase
+
+import (
+        "app/controller/dto"
+        "app/database"
+        "app/entity"
+        "app/service"
+        "context"
+        "errors"
+)
+
+type AuthUsecase interface {
+        SignIn(ctx context.Context, signInParams *dto.AuthSignInRequestDto) error
+        SignUp(ctx context.Context, signInParams *dto.AuthSignUpRequestDto) error
+        Show(ctx context.Context) (user *entity.User, err error)
+        Edit(ctx context.Context, userUpdateParams *dto.AuthUserUpdateRequestDto) (user *entity.User, err error)
+        Delete(ctx context.Context) error
+}
+
+type authUsecase struct {
+        userRepo database.UserRepository
+        sessionS service.SessionService
+        cyptoS   service.CyptoService
+        mailS    service.MailService
+}
+
+func NewAuthUsecase(userRepo database.UserRepository, sessionS service.SessionService, cyptoS service.CyptoService, mailS service.MailService) AuthUsecase <span class="cov8" title="1">{
+        return &amp;authUsecase{
+                userRepo: userRepo,
+                sessionS: sessionS,
+                cyptoS:   cyptoS,
+                mailS:    mailS,
+        }
+}</span>
+
+func (uu *authUsecase) SignIn(ctx context.Context, signInParams *dto.AuthSignInRequestDto) error <span class="cov8" title="1">{
+        loginUser, err := uu.userRepo.FindByEmail(signInParams.Email)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if !uu.cyptoS.ComparePasswords(loginUser.HashPassword, []byte(signInParams.Password)) </span><span class="cov8" title="1">{
+                return errors.New("Authentication Failure")
+        }</span>
+
+        <span class="cov8" title="1">err = uu.sessionS.SaveSession(ctx, "userId", loginUser.ID)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (uu *authUsecase) SignUp(ctx context.Context, signInParams *dto.AuthSignUpRequestDto) error <span class="cov8" title="1">{
+        hashPwd, err := uu.cyptoS.HashAndSalt([]byte(signInParams.Password))
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">u := entity.User{Name: signInParams.Name, Email: signInParams.Email, HashPassword: hashPwd}
+        loginUser, err := uu.userRepo.Create(&amp;u)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">err = uu.sessionS.SaveSession(ctx, "userId", loginUser.ID)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (uu *authUsecase) Show(ctx context.Context) (user *entity.User, err error) <span class="cov0" title="0">{
+        userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
+
+        user, err = uu.userRepo.Find(userId.(uint64))
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (uu *authUsecase) Edit(ctx context.Context, userUpdateParams *dto.AuthUserUpdateRequestDto) (user *entity.User, err error) <span class="cov0" title="0">{
+        userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
+
+        u := &amp;entity.User{
+                ID:    userId.(uint64),
+                Name:  userUpdateParams.Name,
+                Email: userUpdateParams.Email,
+        }
+
+        user, err = uu.userRepo.Update(u)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (uu *authUsecase) Delete(ctx context.Context) error <span class="cov0" title="0">{
+        userId, _ := uu.sessionS.GetSessionValue(ctx, "userId")
+
+        if err := uu.userRepo.Delete(userId.(uint64)); err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">uu.sessionS.DeleteSession(ctx)
+
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package usecase
+
+import (
+        "app/controller/dto"
+        "app/database"
+        "app/entity"
+        "app/service"
+        "context"
+        "errors"
+)
+
+type TodoUsecase interface {
+        FindAll(ctx context.Context) (todos []*entity.Todo, err error)
+        Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todos *entity.Todo, err error)
+        Show(ctx context.Context, todoId int) (todo *entity.Todo, err error)
+        Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error)
+        Delete(ctx context.Context, todoId int) error
+}
+
+type todoUsecase struct {
+        todoRepo database.TodoRepository
+        sessionS service.SessionService
+}
+
+func NewTodoUsecase(todoRepo database.TodoRepository, sessionS service.SessionService) TodoUsecase <span class="cov0" title="0">{
+        return &amp;todoUsecase{
+                todoRepo: todoRepo,
+                sessionS: sessionS,
+        }
+}</span>
+
+func (tu *todoUsecase) FindAll(ctx context.Context) (todos []*entity.Todo, err error) <span class="cov0" title="0">{
+        userId, _ := tu.sessionS.GetSessionValue(ctx, "userId")
+
+        todos, err = tu.todoRepo.FindAll(userId.(uint64))
+
+        return
+}</span>
+
+func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateRequestDto) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        userId, _ := tu.sessionS.GetSessionValue(ctx, "userId")
+
+        t := entity.Todo{Title: createParams.Title, Description: createParams.Description, UserId: userId.(uint64)}
+        todo, err = tu.todoRepo.Create(&amp;t)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        userId, _ := tu.sessionS.GetSessionValue(ctx, "userId")
+
+        todo, err = tu.todoRepo.Get(todoId)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if userId.(uint64) != todo.UserId </span><span class="cov0" title="0">{
+                return nil, errors.New("no your todo")
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (tu *todoUsecase) Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+        t := entity.Todo{ID: uint64(todoId), Title: updateParams.Title, Description: updateParams.Description}
+        todo, err = tu.todoRepo.Update(todoId, &amp;t)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func (tu *todoUsecase) Delete(ctx context.Context, todoId int) error <span class="cov0" title="0">{
+        if err := tu.todoRepo.Delete(&amp;entity.Todo{ID: uint64(todoId)}); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package usecase
+
+import (
+        "app/database"
+        "app/entity"
+)
+
+type UserUsecase interface {
+        FindAll() (users []*entity.User, err error)
+}
+
+type userUsecase struct {
+        userRepo database.UserRepository
+}
+
+func NewUserUsecase(userRepo database.UserRepository) UserUsecase <span class="cov0" title="0">{
+        return &amp;userUsecase{
+                userRepo: userRepo,
+        }
+}</span>
+
+func (uu *userUsecase) FindAll() (users []*entity.User, err error) <span class="cov0" title="0">{
+        return uu.userRepo.FindAll()
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
