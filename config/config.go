@@ -31,9 +31,11 @@ type Config struct {
 			Email    string
 			Password string
 		}
-		Addr      string
-		FromName  string
-		FromEmail string
+		From struct {
+			Name  string
+			Email string
+		}
+		Addr string
 	}
 }
 
@@ -69,8 +71,8 @@ func NewConfig() *Config {
 	c.Mail.Auth.Email = os.Getenv("MAIL_AUTH_EMAIL")
 	c.Mail.Auth.Password = os.Getenv("MAIL_AUTH_PASSWORD")
 	c.Mail.Addr = "smtp.gmail.com:587"
-	c.Mail.FromName = os.Getenv("MAIL_FROM_NAME")
-	c.Mail.FromEmail = os.Getenv("MAIL_FROM_EMAIL")
+	c.Mail.From.Name = os.Getenv("MAIL_FROM_NAME")
+	c.Mail.From.Email = os.Getenv("MAIL_FROM_EMAIL")
 
 	return c
 }

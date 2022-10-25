@@ -39,12 +39,15 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: password
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: ./.github/actions/setup-go
-      - name: Set DB
-        run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `resetapi-test`;'
       - name: Install sql-migrate
         run: go install github.com/rubenv/sql-migrate/...@v1.2.0
       - name: Run test
@@ -56,6 +59,7 @@ jobs:
           DB_NAME: resetapi
           SECRET_HASH_KEY: welkfaIEeifne212iiIDewaf
         run: |
+          go run db/create_database.go
           sql-migrate up -env="test"
           go test ./test/... -test.v
       - uses: ./.github/actions/notify-for-slack
