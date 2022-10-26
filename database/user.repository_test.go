@@ -128,3 +128,46 @@ func TestFindByEmail(t *testing.T) {
 		assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
 	})
 }
+
+func TestUpdate(t *testing.T) {
+	setup := setUp(t)
+	defer setup()
+
+	setIntialData()
+
+	var u = &entity.User{
+		ID:   1,
+		Name: "update_test1",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		result, err := userRepository.Update(u)
+
+		assert.NoError(t, err)
+		assert.Equal(t, u.Name, result.Name)
+	})
+
+	t.Run("If the same email address is registered", func(t *testing.T) {
+		u.Email = "test2@example.com"
+
+		_, err := userRepository.Update(u)
+
+		assert.Error(t, err)
+		assert.Equal(t, int(err.(*mysql.MySQLError).Number), 1062)
+	})
+}
+
+func TestDelete(t *testing.T) {
+	setup := setUp(t)
+	defer setup()
+
+	setIntialData()
+
+	var deleteUserId uint64 = 1
+
+	t.Run("success", func(t *testing.T) {
+		err := userRepository.Delete(deleteUserId)
+
+		assert.NoError(t, err)
+	})
+}
