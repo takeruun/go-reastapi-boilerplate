@@ -15,7 +15,7 @@ services:
       DB_NAME: resetapi
       SECRET_HASH_KEY: s3092Izdfa2dd3DJGe2KiefaCdDEa2t02B31
     ports:
-      - 3000:3000
+      - 3010:3000
     tty: true
     stdin_open: true
     depends_on:

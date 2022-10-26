@@ -1,11 +1,10 @@
-package usecase_test
+package usecase
 
 import (
 	"app/controller/dto"
 	"app/entity"
-	"app/test/mock_database"
-	"app/test/mock_service"
-	"app/usecase"
+	"app/test_utils/mock_database"
+	"app/test_utils/mock_service"
 	"errors"
 
 	"context"
@@ -19,7 +18,7 @@ var mockUserRepository *mock_database.MockUserRepository
 var mockCyptoService *mock_service.MockCyptoService
 var mockSessionService *mock_service.MockSessionService
 var mockMailServive *mock_service.MockMailService
-var authUsecase usecase.AuthUsecase
+var testAuthUsecase AuthUsecase
 
 func setUp(t *testing.T) func() {
 	ctrl := gomock.NewController(t)
@@ -48,14 +47,14 @@ func TestSignIn(t *testing.T) {
 		mockCyptoService.EXPECT().ComparePasswords(expectedUser.HashPassword, []byte(password)).Return(true)
 		mockSessionService.EXPECT().SaveSession(gomock.Any(), "userId", expectedUser.ID)
 
-		authUsecase = usecase.NewAuthUsecase(
+		testAuthUsecase = NewAuthUsecase(
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
 			mockMailServive,
 		)
 
-		err := authUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
+		err := testAuthUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
 
 		assert.NoError(t, err)
 	})
@@ -65,14 +64,14 @@ func TestSignIn(t *testing.T) {
 		mockCyptoService.EXPECT().ComparePasswords(expectedUser.HashPassword, []byte(password)).Return(false)
 		mockSessionService.EXPECT().SaveSession(gomock.Any(), "userId", expectedUser.ID)
 
-		authUsecase = usecase.NewAuthUsecase(
+		testAuthUsecase = NewAuthUsecase(
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
 			mockMailServive,
 		)
 
-		err := authUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
+		err := testAuthUsecase.SignIn(context.TODO(), &dto.AuthSignInRequestDto{Email: email, Password: password})
 
 		assert.Error(t, err)
 		assert.EqualError(t, err, "Authentication Failure")
@@ -96,14 +95,14 @@ func TestSignUp(t *testing.T) {
 		mockUserRepository.EXPECT().Create(&entity.User{Email: email, HashPassword: hashPassword, Name: name}).Return(&expectedUser, nil)
 		mockSessionService.EXPECT().SaveSession(gomock.Any(), "userId", expectedUser.ID)
 
-		authUsecase = usecase.NewAuthUsecase(
+		testAuthUsecase = NewAuthUsecase(
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
 			mockMailServive,
 		)
 
-		err := authUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
+		err := testAuthUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
 
 		assert.NoError(t, err)
 	})
@@ -115,14 +114,14 @@ func TestSignUp(t *testing.T) {
 		mockUserRepository.EXPECT().Create(&entity.User{Email: email, HashPassword: hashPassword, Name: name}).Return(&expectedUser, nil)
 		mockSessionService.EXPECT().SaveSession(gomock.Any(), "userId", expectedUser.ID)
 
-		authUsecase = usecase.NewAuthUsecase(
+		testAuthUsecase = NewAuthUsecase(
 			mockUserRepository,
 			mockSessionService,
 			mockCyptoService,
 			mockMailServive,
 		)
 
-		err = authUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
+		err = testAuthUsecase.SignUp(context.TODO(), &dto.AuthSignUpRequestDto{Email: email, Password: password, Name: name})
 
 		assert.Error(t, err)
 	})

@@ -22,3 +22,7 @@ entry-server-container:
 
 entry-db-container:
 	docker-compose exec db bash
+
+test-cover:
+	docker-compose exec restapi go test -cover ./... -coverprofile=cover.out
+	docker-compose exec restapi go tool cover -html=cover.out -o cover.html

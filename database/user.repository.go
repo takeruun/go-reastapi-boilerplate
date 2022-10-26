@@ -70,6 +70,9 @@ func (userRep *userRepository) Create(u *entity.User) (user *entity.User, err er
 
 func (userRep *userRepository) Update(u *entity.User) (user *entity.User, err error) {
 	err = userRep.DB.Updates(&u).Error
+	if err != nil {
+		return nil, err
+	}
 
 	err = userRep.DB.First(&user, &u.ID).Error
 	if err != nil {
@@ -80,7 +83,7 @@ func (userRep *userRepository) Update(u *entity.User) (user *entity.User, err er
 }
 
 func (userRep *userRepository) Delete(userId uint64) error {
-	if err := userRep.DB.Model(&entity.User{}).Delete("id = ?", userId).Error; err != nil {
+	if err := userRep.DB.Delete(&entity.User{}, userId).Error; err != nil {
 		return err
 	}
 
