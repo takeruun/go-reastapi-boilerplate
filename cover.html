@@ -57,7 +57,7 @@
 				
 				<option value="file0">app/database/todo.repository.go (0.0%)</option>
 				
-				<option value="file1">app/database/user.repository.go (80.0%)</option>
+				<option value="file1">app/database/user.repository.go (86.7%)</option>
 				
 				<option value="file2">app/service/cypto_service.go (0.0%)</option>
 				
@@ -251,12 +251,12 @@ func (userRep *userRepository) Update(u *entity.User) (user *entity.User, err er
         <span class="cov8" title="1">return</span>
 }
 
-func (userRep *userRepository) Delete(userId uint64) error <span class="cov0" title="0">{
-        if err := userRep.DB.Model(&amp;entity.User{}).Delete("id = ?", userId).Error; err != nil </span><span class="cov0" title="0">{
+func (userRep *userRepository) Delete(userId uint64) error <span class="cov8" title="1">{
+        if err := userRep.DB.Delete(&amp;entity.User{}, userId).Error; err != nil </span><span class="cov0" title="0">{
                 return err
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
