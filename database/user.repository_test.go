@@ -14,32 +14,32 @@ import (
 )
 
 var userRepository database.UserRepository
-var db *config.DB
+var userDb *config.DB
 
-func setUp(t *testing.T) func() {
+func userSetUp(t *testing.T) func() {
 	os.Setenv("GO_MODE", "test")
-	db = test_utils.NewDB(t)
-	userRepository = database.NewUserRepository(db)
+	userDb = test_utils.NewDB(t)
+	userRepository = database.NewUserRepository(userDb)
 
 	return func() {
-		db.Exec("DELETE FROM users")
+		userDb.Exec("DELETE FROM users")
 	}
 }
 
-func setIntialData() {
+func setIntialUserData() {
 	data := []entity.User{
 		{ID: 1, Name: "test1", Email: "test1@example.com", HashPassword: "d2fka"},
 		{ID: 2, Name: "test2", Email: "test2@example.com", HashPassword: "d2fasdlfka"},
 		{ID: 3, Name: "test3", Email: "test3@example.com", HashPassword: "d2fka"},
 	}
-	db.Create(&data)
+	userDb.Create(&data)
 }
 
-func TestFindAll(t *testing.T) {
-	setup := setUp(t)
+func TestUserFindAll(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
-	setIntialData()
+	setIntialUserData()
 
 	t.Run("success", func(t *testing.T) {
 		result, err := userRepository.FindAll()
@@ -50,11 +50,11 @@ func TestFindAll(t *testing.T) {
 
 }
 
-func TestFind(t *testing.T) {
-	setup := setUp(t)
+func TestUserFind(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
-	setIntialData()
+	setIntialUserData()
 
 	var userId uint64 = 1
 
@@ -75,8 +75,8 @@ func TestFind(t *testing.T) {
 	})
 }
 
-func TestCreate(t *testing.T) {
-	setup := setUp(t)
+func TestUserCreate(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
 	var u = &entity.User{
@@ -94,7 +94,7 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("If the same email address is registered", func(t *testing.T) {
-		setIntialData()
+		setIntialUserData()
 		u.Email = "test3@example.com"
 
 		_, err := userRepository.Create(u)
@@ -104,11 +104,11 @@ func TestCreate(t *testing.T) {
 	})
 }
 
-func TestFindByEmail(t *testing.T) {
-	setup := setUp(t)
+func TestUserFindByEmail(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
-	setIntialData()
+	setIntialUserData()
 
 	var email = "test1@example.com"
 
@@ -129,11 +129,11 @@ func TestFindByEmail(t *testing.T) {
 	})
 }
 
-func TestUpdate(t *testing.T) {
-	setup := setUp(t)
+func TestUserUpdate(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
-	setIntialData()
+	setIntialUserData()
 
 	var u = &entity.User{
 		ID:   1,
@@ -157,11 +157,11 @@ func TestUpdate(t *testing.T) {
 	})
 }
 
-func TestDelete(t *testing.T) {
-	setup := setUp(t)
+func TestUserDelete(t *testing.T) {
+	setup := userSetUp(t)
 	defer setup()
 
-	setIntialData()
+	setIntialUserData()
 
 	var deleteUserId uint64 = 1
 
