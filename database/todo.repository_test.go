@@ -47,3 +47,6 @@ func TestTodoFindAll(t *testing.T) {
 		assert.Equal(t, uint64(1), result[0].UserId)
 	})
 }
+
+func TestTodoCreate(t *testing.T) {
+}
