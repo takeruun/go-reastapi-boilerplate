@@ -49,4 +49,21 @@ func TestTodoFindAll(t *testing.T) {
 }
 
 func TestTodoCreate(t *testing.T) {
+	setup := todoSetUp(t)
+	defer setup()
+
+	var to = &entity.Todo{
+		UserId:      1,
+		Title:       "tset",
+		Description: "description",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		result, err := todoRepository.Create(to)
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, result.ID)
+		assert.Equal(t, to.Title, result.Title)
+	})
+
 }
