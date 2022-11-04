@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
 
 var todoRepository database.TodoRepository
@@ -45,6 +46,31 @@ func TestTodoFindAll(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, len(result), 1)
 		assert.Equal(t, uint64(1), result[0].UserId)
+	})
+}
+
+func TestFind(t *testing.T) {
+	setup := todoSetUp(t)
+	defer setup()
+
+	setIntialTodoData()
+
+	var todoId int = 1
+
+	t.Run("success", func(t *testing.T) {
+		result, err := todoRepository.Find(todoId)
+
+		assert.NoError(t, err)
+		assert.Equal(t, uint64(todoId), result.ID)
+	})
+
+	t.Run("If the todo is not found", func(t *testing.T) {
+		todoId = 0
+
+		_, err := todoRepository.Find(todoId)
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
 	})
 }
 

@@ -8,7 +8,7 @@ import (
 type TodoRepository interface {
 	FindAll(userId uint64) (todos []*entity.Todo, err error)
 	Create(t *entity.Todo) (todo *entity.Todo, err error)
-	Get(todoId int) (todo *entity.Todo, err error)
+	Find(todoId int) (todo *entity.Todo, err error)
 	Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error)
 	Delete(t *entity.Todo) error
 }
@@ -48,8 +48,8 @@ func (todoRep *todoRepository) Create(t *entity.Todo) (todo *entity.Todo, err er
 	return
 }
 
-func (todoRep *todoRepository) Get(todoId int) (todo *entity.Todo, err error) {
-	err = todoRep.DB.Find(&todo, todoId).Error
+func (todoRep *todoRepository) Find(todoId int) (todo *entity.Todo, err error) {
+	err = todoRep.DB.First(&todo, todoId).Error
 	if err != nil {
 		return nil, err
 	}

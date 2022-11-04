@@ -52,7 +52,7 @@ func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateR
 func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo, err error) {
 	userId, _ := tu.sessionS.GetSessionValue(ctx, "userId")
 
-	todo, err = tu.todoRepo.Get(todoId)
+	todo, err = tu.todoRepo.Find(todoId)
 	if err != nil {
 		return nil, err
 	}
