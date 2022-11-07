@@ -9,7 +9,7 @@ type TodoRepository interface {
 	FindAll(userId uint64) (todos []*entity.Todo, err error)
 	Create(t *entity.Todo) (todo *entity.Todo, err error)
 	Find(todoId int) (todo *entity.Todo, err error)
-	Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error)
+	Update(t *entity.Todo) (todo *entity.Todo, err error)
 	Delete(t *entity.Todo) error
 }
 
@@ -57,7 +57,7 @@ func (todoRep *todoRepository) Find(todoId int) (todo *entity.Todo, err error) {
 	return
 }
 
-func (todoRep *todoRepository) Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error) {
+func (todoRep *todoRepository) Update(t *entity.Todo) (todo *entity.Todo, err error) {
 	err = todoRep.DB.Updates(&t).Error
 	if err != nil {
 		return nil, err

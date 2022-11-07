@@ -91,5 +91,26 @@ func TestTodoCreate(t *testing.T) {
 		assert.NotEmpty(t, result.ID)
 		assert.Equal(t, to.Title, result.Title)
 	})
+}
 
+func TestUpdate(t *testing.T) {
+	setup := todoSetUp(t)
+	defer setup()
+
+	setIntialTodoData()
+
+	var to = &entity.Todo{
+		ID:          1,
+		UserId:      1,
+		Title:       "update_tset",
+		Description: "update_description",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		result, err := todoRepository.Update(to)
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, result.ID)
+		assert.Equal(t, to.Title, result.Title)
+	})
 }

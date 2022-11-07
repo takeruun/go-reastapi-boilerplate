@@ -66,7 +66,7 @@ func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo,
 
 func (tu *todoUsecase) Edit(todoId int, updateParams *dto.TodoUpdateRequestDto) (todo *entity.Todo, err error) {
 	t := entity.Todo{ID: uint64(todoId), Title: updateParams.Title, Description: updateParams.Description}
-	todo, err = tu.todoRepo.Update(todoId, &t)
+	todo, err = tu.todoRepo.Update(&t)
 	if err != nil {
 		return nil, err
 	}
