@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
 
 var todoRepository database.TodoRepository
@@ -48,6 +49,31 @@ func TestTodoFindAll(t *testing.T) {
 	})
 }
 
+func TestFind(t *testing.T) {
+	setup := todoSetUp(t)
+	defer setup()
+
+	setIntialTodoData()
+
+	var todoId int = 1
+
+	t.Run("success", func(t *testing.T) {
+		result, err := todoRepository.Find(todoId)
+
+		assert.NoError(t, err)
+		assert.Equal(t, uint64(todoId), result.ID)
+	})
+
+	t.Run("If the todo is not found", func(t *testing.T) {
+		todoId = 0
+
+		_, err := todoRepository.Find(todoId)
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, gorm.ErrRecordNotFound)
+	})
+}
+
 func TestTodoCreate(t *testing.T) {
 	setup := todoSetUp(t)
 	defer setup()
@@ -65,5 +91,26 @@ func TestTodoCreate(t *testing.T) {
 		assert.NotEmpty(t, result.ID)
 		assert.Equal(t, to.Title, result.Title)
 	})
+}
 
+func TestUpdate(t *testing.T) {
+	setup := todoSetUp(t)
+	defer setup()
+
+	setIntialTodoData()
+
+	var to = &entity.Todo{
+		ID:          1,
+		UserId:      1,
+		Title:       "update_tset",
+		Description: "update_description",
+	}
+
+	t.Run("success", func(t *testing.T) {
+		result, err := todoRepository.Update(to)
+
+		assert.NoError(t, err)
+		assert.NotEmpty(t, result.ID)
+		assert.Equal(t, to.Title, result.Title)
+	})
 }
