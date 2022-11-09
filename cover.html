@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">app/database/todo.repository.go (0.0%)</option>
+				<option value="file0">app/database/todo.repository.go (50.0%)</option>
 				
 				<option value="file1">app/database/user.repository.go (86.7%)</option>
 				
@@ -93,7 +93,7 @@ import (
 type TodoRepository interface {
         FindAll(userId uint64) (todos []*entity.Todo, err error)
         Create(t *entity.Todo) (todo *entity.Todo, err error)
-        Get(todoId int) (todo *entity.Todo, err error)
+        Find(todoId int) (todo *entity.Todo, err error)
         Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error)
         Delete(t *entity.Todo) error
 }
@@ -102,11 +102,11 @@ type todoRepository struct {
         DB *config.DB
 }
 
-func NewTodoRepository(DB *config.DB) TodoRepository <span class="cov0" title="0">{
+func NewTodoRepository(DB *config.DB) TodoRepository <span class="cov8" title="1">{
         return &amp;todoRepository{DB: DB}
 }</span>
 
-func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err error) <span class="cov0" title="0">{
+func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err error) <span class="cov8" title="1">{
         err = todoRep.DB.Model(&amp;entity.Todo{}).
                 Where("user_id = ?", userId).
                 Find(&amp;todos).
@@ -116,30 +116,30 @@ func (todoRep *todoRepository) FindAll(userId uint64) (todos []*entity.Todo, err
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return</span>
+        <span class="cov8" title="1">return</span>
 }
 
-func (todoRep *todoRepository) Create(t *entity.Todo) (todo *entity.Todo, err error) <span class="cov0" title="0">{
+func (todoRep *todoRepository) Create(t *entity.Todo) (todo *entity.Todo, err error) <span class="cov8" title="1">{
         err = todoRep.DB.Create(&amp;t).Error
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">err = todoRep.DB.Find(&amp;todo, &amp;t.ID).Error
+        <span class="cov8" title="1">err = todoRep.DB.Find(&amp;todo, &amp;t.ID).Error
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return</span>
+        <span class="cov8" title="1">return</span>
 }
 
-func (todoRep *todoRepository) Get(todoId int) (todo *entity.Todo, err error) <span class="cov0" title="0">{
-        err = todoRep.DB.Find(&amp;todo, todoId).Error
-        if err != nil </span><span class="cov0" title="0">{
+func (todoRep *todoRepository) Find(todoId int) (todo *entity.Todo, err error) <span class="cov8" title="1">{
+        err = todoRep.DB.First(&amp;todo, todoId).Error
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">return</span>
+        <span class="cov8" title="1">return</span>
 }
 
 func (todoRep *todoRepository) Update(todoId int, t *entity.Todo) (todo *entity.Todo, err error) <span class="cov0" title="0">{
@@ -584,7 +584,7 @@ func (tu *todoUsecase) Create(ctx context.Context, createParams *dto.TodoCreateR
 func (tu *todoUsecase) Show(ctx context.Context, todoId int) (todo *entity.Todo, err error) <span class="cov0" title="0">{
         userId, _ := tu.sessionS.GetSessionValue(ctx, "userId")
 
-        todo, err = tu.todoRepo.Get(todoId)
+        todo, err = tu.todoRepo.Find(todoId)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
