@@ -7,6 +7,7 @@ import (
 	"app/test_utils/mock_service"
 	"app/usecase"
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -46,5 +47,17 @@ func TestCreate(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, expectedTodo.Title, result.Title)
 		assert.Equal(t, expectedTodo.Description, result.Description)
+	})
+
+	t.Run("Error in todo creation", func(t *testing.T) {
+		var expectErr error = errors.New("error")
+		mockSessionService.EXPECT().GetSessionValue(gomock.Any(), "userId").Return(uint64(1), nil)
+		mockTodoRepository.EXPECT().Create(&entity.Todo{Title: title, Description: description, UserId: 1}).Return(&expectedTodo, expectErr)
+		todoUsecase := usecase.NewTodoUsecase(mockTodoRepository, mockSessionService)
+
+		_, err := todoUsecase.Create(context.TODO(), &dto.TodoCreateRequestDto{Title: title, Description: description})
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, expectErr)
 	})
 }
