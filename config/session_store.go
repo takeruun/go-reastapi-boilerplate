@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	SESSION_KEY_NAME = "_goreset_session"
+	SESSION_KEY_NAME = "_gorest_api_session"
 )
 
 type SESSION_STORE struct {
@@ -32,7 +32,7 @@ func newSessionStore(db *gorm.DB, ss *SESSION_STORE) *gormstore.Store {
 	store.SessionOpts.Secure = false // postman での使用は false に
 	store.SessionOpts.HttpOnly = true
 	store.SessionOpts.MaxAge = 60 * 60 * 24
-	store.SessionOpts.SameSite = http.SameSiteNoneMode
+	store.SessionOpts.SameSite = http.SameSiteLaxMode
 
 	return store
 }
