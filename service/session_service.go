@@ -65,6 +65,7 @@ func (service *sessionService) SaveSession(ctx context.Context, key string, valu
 	session.Values[key] = value
 
 	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
+	// 内部で http.SetCookie(...) している
 	err = service.store.Save(httpContext.R, *httpContext.W, session)
 	if err != nil {
 		return err
