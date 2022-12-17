@@ -14,6 +14,7 @@ func SetHttpContextMiddleware(next http.Handler) http.Handler {
 		}
 		httpKeyContext := service.HTTPKey("http")
 
+		// context 経由で http.ResponseWriter, *http.Request の値使えるようにする
 		ctx := context.WithValue(r.Context(), httpKeyContext, httpContext)
 
 		r = r.WithContext(ctx)
